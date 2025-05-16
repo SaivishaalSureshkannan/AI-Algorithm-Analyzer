@@ -13,14 +13,20 @@ class FeatureExtractor:
             'max_depth': 0,
             'has_recursion': 0,
             'input_vars': 0,
-            'max_nesting': 0
+            'max_nesting': 0,
+            'input_dependent_loops': 0  # Only one feature for input-dependent loops
         }
+        self.input_args = set()
     
     def extract_features(self, code: str) -> Dict[str, int]:
         """Extract features from Python code using AST."""
         try:
             tree = ast.parse(code)
             self._reset_features()
+            self.input_args = set()
+            for node in ast.walk(tree):
+                if isinstance(node, ast.FunctionDef):
+                    self.input_args = {arg.arg for arg in node.args.args}
             self._analyze_ast(tree)
             return self.features
         except SyntaxError:
@@ -35,41 +41,64 @@ class FeatureExtractor:
         """Recursively analyze AST nodes and extract features."""
         # Update max depth
         self.features['max_depth'] = max(self.features['max_depth'], depth)
-        
         # Update max nesting level
         self.features['max_nesting'] = max(self.features['max_nesting'], nesting_level)
-        
         # Count different types of nodes
         if isinstance(node, ast.For):
             self.features['for_loops'] += 1
-            # Analyze the body of the for loop
+            if self._is_input_dependent_for(node):
+                self.features['input_dependent_loops'] += 1
             for child in node.body:
                 self._analyze_ast(child, depth + 1, nesting_level + 1)
         elif isinstance(node, ast.While):
             self.features['while_loops'] += 1
-            # Analyze the body of the while loop
+            if self._is_input_dependent_while(node):
+                self.features['input_dependent_loops'] += 1
             for child in node.body:
                 self._analyze_ast(child, depth + 1, nesting_level + 1)
         elif isinstance(node, ast.If):
             self.features['if_statements'] += 1
-            # Analyze the body of the if statement
             for child in node.body:
                 self._analyze_ast(child, depth + 1, nesting_level)
-            # Analyze the else body if it exists
             for child in node.orelse:
                 self._analyze_ast(child, depth + 1, nesting_level)
         elif isinstance(node, ast.Call):
-            # Check for recursive calls
             if isinstance(node.func, ast.Name):
                 self.features['recursive_calls'] += 1
                 self.features['has_recursion'] = 1
         elif isinstance(node, ast.arg):
             self.features['input_vars'] += 1
-        
         # Analyze other child nodes that aren't part of control structures
         if not isinstance(node, (ast.For, ast.While, ast.If)):
             for child in ast.iter_child_nodes(node):
                 self._analyze_ast(child, depth + 1, nesting_level)
+    
+    def _is_input_dependent_for(self, node: ast.For) -> bool:
+        # Check if the loop's range uses any input argument
+        # Handles range(n), range(len(arr)), direct iteration over input, etc.
+        if isinstance(node.iter, ast.Call):
+            # e.g., range(n), range(len(arr)), etc.
+            call = node.iter
+            # Check arguments of the call
+            for arg in ast.walk(call):
+                if isinstance(arg, ast.Name) and arg.id in self.input_args:
+                    return True
+                if isinstance(arg, ast.Call) and hasattr(arg.func, 'id') and arg.func.id == 'len':
+                    for sub_arg in arg.args:
+                        if isinstance(sub_arg, ast.Name) and sub_arg.id in self.input_args:
+                            return True
+        elif isinstance(node.iter, ast.Name):
+            # e.g., for x in arr:
+            if node.iter.id in self.input_args:
+                return True
+        return False
+
+    def _is_input_dependent_while(self, node: ast.While) -> bool:
+        # Check if the while loop's condition uses any input argument
+        for arg in ast.walk(node.test):
+            if isinstance(arg, ast.Name) and arg.id in self.input_args:
+                return True
+        return False
     
     def get_feature_vector(self, code: str) -> np.ndarray:
         """Convert code to a feature vector."""

@@ -43,19 +43,23 @@ class DatasetCreator:
         labels = []
         
         for filename in os.listdir(self.raw_data_dir):
-            if filename.endswith('.py'):
+            if filename.endswith('.py'):  # Files are .py but contain JSON data
                 filepath = os.path.join(self.raw_data_dir, filename)
                 
-                with open(filepath, 'r') as f:
-                    data = json.load(f)
-                
                 try:
+                    with open(filepath, 'r') as f:
+                        data = json.load(f)
+                    
                     features = self.feature_extractor.get_feature_vector(data['code'])
                     features_list.append(features)
                     labels.append(data['complexity'])
-                except ValueError as e:
+                except (json.JSONDecodeError, ValueError) as e:
                     print(f"Error processing {filename}: {e}")
+                    continue
         
+        if not features_list:
+            raise ValueError("No valid code samples found in the dataset")
+            
         # Create DataFrame
         df = pd.DataFrame(features_list, 
                          columns=self.feature_extractor.features.keys())

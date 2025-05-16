@@ -1,0 +1,4 @@
+{
+    "code": "def exponential_time_12(s):\n    def is_valid(substring):\n        # Check if a substring is valid based on some criteria\n        return True  # Simplified for the example\n    \n    def backtrack(start, path):\n        if start == len(s):\n            result.append(path[:])\n            return\n        \n        for end in range(start, len(s)):\n            substring = s[start:end + 1]\n            if is_valid(substring):\n                path.append(substring)\n                backtrack(end + 1, path)\n                path.pop()\n    \n    result = []\n    backtrack(0, [])\n    return result",
+    "complexity": "O(2^n)"
+}

@@ -1,0 +1,4 @@
+{
+    "code": "def quadratic_time_12(grid):\n    rows = len(grid)\n    cols = len(grid[0]) if rows > 0 else 0\n    islands = 0\n    \n    for r in range(rows):\n        for c in range(cols):\n            if grid[r][c] == 1:\n                islands += 1\n                queue = [(r, c)]\n                grid[r][c] = 0\n                \n                while queue:\n                    row, col = queue.pop(0)\n                    for dr, dc in [(1, 0), (-1, 0), (0, 1), (0, -1)]:\n                        nr, nc = row + dr, col + dc\n                        if 0 <= nr < rows and 0 <= nc < cols and grid[nr][nc] == 1:\n                            grid[nr][nc] = 0\n                            queue.append((nr, nc))\n    \n    return islands",
+    "complexity": "O(n^2)"
+}

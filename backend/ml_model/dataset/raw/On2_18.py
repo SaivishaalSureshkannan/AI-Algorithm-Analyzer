@@ -1,0 +1,4 @@
+{
+    "code": "def quadratic_time_18(arr):\n    n = len(arr)\n    dp = [[False] * n for _ in range(n)]\n    \n    # All substrings of length 1 are palindromes\n    for i in range(n):\n        dp[i][i] = True\n    \n    # Check for substrings of length 2\n    for i in range(n - 1):\n        if arr[i] == arr[i + 1]:\n            dp[i][i + 1] = True\n    \n    # Check for substrings of length 3 or more\n    for length in range(3, n + 1):\n        for i in range(n - length + 1):\n            j = i + length - 1\n            if arr[i] == arr[j] and dp[i + 1][j - 1]:\n                dp[i][j] = True\n    \n    return dp",
+    "complexity": "O(n^2)"
+}

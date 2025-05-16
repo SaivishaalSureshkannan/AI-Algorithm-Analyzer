@@ -1,0 +1,4 @@
+{
+    "code": "def exponential_time_17(target, numbers):\n    def find_expressions(idx, current_result, expression):\n        if idx == len(numbers):\n            if current_result == target:\n                results.append(expression)\n            return\n        \n        # Addition\n        find_expressions(idx + 1, current_result + numbers[idx], \n                        expression + '+' + str(numbers[idx]) if expression else str(numbers[idx]))\n        \n        # Subtraction\n        find_expressions(idx + 1, current_result - numbers[idx], \n                        expression + '-' + str(numbers[idx]) if expression else '-' + str(numbers[idx]))\n    \n    results = []\n    find_expressions(0, 0, '')\n    return results",
+    "complexity": "O(2^n)"
+}

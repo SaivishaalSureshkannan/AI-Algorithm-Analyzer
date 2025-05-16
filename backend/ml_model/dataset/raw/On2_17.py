@@ -1,0 +1,4 @@
+{
+    "code": "def quadratic_time_17(points):\n    if len(points) < 3:\n        return len(points)\n    \n    max_points = 0\n    for i in range(len(points)):\n        slopes = {}\n        same_points = 1\n        for j in range(len(points)):\n            if i == j:\n                continue\n            if points[i][0] == points[j][0] and points[i][1] == points[j][1]:\n                same_points += 1\n            elif points[i][0] == points[j][0]:\n                slopes['inf'] = slopes.get('inf', 0) + 1\n            else:\n                slope = (points[j][1] - points[i][1]) / (points[j][0] - points[i][0])\n                slopes[slope] = slopes.get(slope, 0) + 1\n        \n        current_max = same_points\n        for slope, count in slopes.items():\n            current_max = max(current_max, count + same_points)\n        \n        max_points = max(max_points, current_max)\n    \n    return max_points",
+    "complexity": "O(n^2)"
+}
