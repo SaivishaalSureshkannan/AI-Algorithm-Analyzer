@@ -1,0 +1,4 @@
+{
+    "code": "def exponential_time_10(board, word):\n    def dfs(i, j, k):\n        if not (0 <= i < len(board)) or not (0 <= j < len(board[0])) or board[i][j] != word[k]:\n            return False\n        if k == len(word) - 1:\n            return True\n        temp, board[i][j] = board[i][j], '#'\n        found = dfs(i+1, j, k+1) or dfs(i-1, j, k+1) or dfs(i, j+1, k+1) or dfs(i, j-1, k+1)\n        board[i][j] = temp\n        return found\n    \n    for i in range(len(board)):\n        for j in range(len(board[0])):\n            if dfs(i, j, 0):\n                return True\n    return False",
+    "complexity": "O(2^n)"
+}

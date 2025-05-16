@@ -1,0 +1,4 @@
+{
+    "code": "def exponential_time_7(s):\n    def is_palindrome(sub):\n        return sub == sub[::-1]\n    \n    def find_partitions(s, start, partition, results):\n        if start >= len(s):\n            results.append(partition[:])\n            return\n        for end in range(start, len(s)):\n            if is_palindrome(s[start:end+1]):\n                partition.append(s[start:end+1])\n                find_partitions(s, end+1, partition, results)\n                partition.pop()\n    \n    results = []\n    find_partitions(s, 0, [], results)\n    return results",
+    "complexity": "O(2^n)"
+}
