@@ -7,6 +7,7 @@ import joblib
 import os
 import sys
 from pathlib import Path
+import json
 
 # Add the ml_model directory to Python path
 backend_dir = Path(__file__).parent.parent
@@ -19,6 +20,11 @@ from src.feature_extractor import FeatureExtractor
 model_path = backend_dir / "ml_model" / "models" / "complexity_predictor.joblib"
 model = joblib.load(model_path)
 feature_extractor = FeatureExtractor()
+
+# Load feature stats
+stats_path = Path(__file__).parent.parent / "ml_model" / "src" / "feature_stats.json"
+with open(stats_path, "r") as f:
+    feature_stats = json.load(f)
 
 app = FastAPI(title="AI Algorithm Complexity Analyzer")
 
@@ -107,31 +113,56 @@ async def analyze_algorithm(request: CodeAnalysisRequest):
     """
     return analyze_code(request.code)
 
+def is_outlier(features):
+    # Heuristic 1: Suspicious patterns
+    if features['for_loops'] >= 3 or features['while_loops'] >= 2:
+        return True
+    if features['has_recursion'] and features['recursive_calls'] >= 3:
+        return True
+
+    # Heuristic 2: Out of training range or z-score
+    for key, value in features.items():
+        if key in feature_stats:
+            if value < feature_stats[key]['min'] or value > feature_stats[key]['max']:
+                return True
+            # Optional: z-score check for continuous features
+            if feature_stats[key]['std'] > 0:
+                z = abs((value - feature_stats[key]['mean']) / feature_stats[key]['std'])
+                if z > 3:  # 3-sigma rule
+                    return True
+    return False
+
 @app.post("/predict", response_model=MLPredictionResponse)
 async def predict_complexity(request: MLPredictionRequest):
     """
     Predict the time complexity of Python code using ML model
     """
     try:
-        # Extract features from the code
         features = feature_extractor.extract_features(request.code)
-        
-        # Convert features to numpy array for prediction
+
+        # Outlier/Heuristic detection
+        if is_outlier(features):
+            return MLPredictionResponse(
+                predicted_complexity="Unknown",
+                confidence=1.0,
+                features=features
+            )
+
         feature_vector = feature_extractor.get_feature_vector(request.code)
-        
-        # Make prediction
-        prediction = model.predict([feature_vector])[0]
-        
-        # Get prediction probabilities
         probabilities = model.predict_proba([feature_vector])[0]
         confidence = float(max(probabilities))
-        
+        prediction = model.predict([feature_vector])[0]
+
+        # Confidence fallback
+        if confidence < 0.5:
+            prediction = "Unknown"
+            confidence = 1.0
+
         return MLPredictionResponse(
             predicted_complexity=prediction,
             confidence=confidence,
             features=features
         )
-    
     except SyntaxError as e:
         raise HTTPException(status_code=400, detail=f"Invalid Python code: {str(e)}")
     except Exception as e:
