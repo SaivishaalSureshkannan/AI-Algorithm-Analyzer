@@ -48,9 +48,8 @@ const Home = () => {
 
         {/* Analysis Output Section */}
         <div className="w-full flex flex-col gap-6">
-          <h2 className="text-xl font-semibold mb-2 text-center">Code Analysis: </h2>
-          <PredictionCard analysis={analysis} />
-          <ComplexityGraph analysis={analysis} />
+          <h2 className="text-xl font-semibold mb-2 text-center">Code Analysis: </h2>          <PredictionCard analysis={analysis} />
+          <ComplexityGraph complexity={analysis?.mlPrediction?.complexity || analysis?.complexity} />
           <h2 className="text-xl font-semibold mb-2 text-center">Explanation: </h2>
           <ExplanationBox analysis={analysis} />
         </div>
