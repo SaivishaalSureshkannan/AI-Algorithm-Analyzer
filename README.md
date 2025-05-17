@@ -1,12 +1,104 @@
-# React + Vite
+# AI Algorithm Complexity Analyzer
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Overview
+An intelligent web application that analyzes Python code from user to predict and visualize algorithmic time complexity using machine learning. The system combines traditional static analysis with ML-based predictions to provide accurate complexity assessments and interactive visualizations.
 
-Currently, two official plugins are available:
+## Features
+- **Dual Analysis System**
+  - Traditional static code analysis
+  - ML-based complexity prediction with confidence scoring
+- **Interactive Visualization**
+  - Real-time D3.js graphs showing complexity growth patterns
+  - Support for O(1), O(n), O(n²), and O(2ⁿ) complexities
+- **Code Analysis Features**
+  - Loop detection (for/while loops)
+  - Recursion identification
+  - Nested structure analysis
+  - Feature extraction for ML prediction
+- **Performance Optimization**
+  - Algorithmic improvement suggestions
+  - Code optimization recommendations
+  - Confidence-based fallback system
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Tech Stack
+### Frontend
+- **React** with Vite for fast development and building
+- **Tailwind CSS** for modern, responsive styling
+- **D3.js** for interactive complexity visualizations
+- Modern JavaScript (ES6+) features
 
-## Expanding the ESLint configuration
+### Backend
+- **FastAPI** for high-performance API endpoints
+- **Python AST** for code analysis
+- **Machine Learning Pipeline**
+  - scikit-learn for model training and prediction
+  - Custom feature extraction system
+  - Trained on diverse algorithm datasets
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### ML/Data Science
+- **Feature Engineering** for code pattern recognition
+- **Supervised Learning Model** for complexity classification
+- **Statistical Analysis** for outlier detection
+- **Model Confidence Scoring** for reliability assessment
+
+## Machine Learning Approach
+- **Feature Extraction**: Analysis of code structure, loops, recursion patterns
+- **Model Training**: Supervised learning on labeled algorithm examples
+- **Prediction Pipeline**: Real-time code analysis and complexity classification
+- **Confidence Scoring**: Reliability assessment of predictions
+
+## Getting Started
+1. Clone the repository
+```bash
+git clone https://github.com/yourusername/AI-Algorithm-Analyzer.git
+```
+
+2. Install frontend dependencies
+```bash
+cd frontend
+npm install
+```
+
+3. Install backend dependencies
+```bash
+cd backend
+pip install -r requirements.txt
+```
+
+4. Start the development servers
+```bash
+# Frontend (in frontend directory)
+npm run dev
+
+# Backend (in backend directory)
+uvicorn app.main:app --reload
+```
+
+## Demo
+Visit `http://localhost:5173` to try the analyzer:
+1. Paste your Python code
+2. Click "Analyze"
+3. View complexity prediction and visualization
+4. Check optimization suggestions
+
+## Future Implementation Plans
+
+### Enhanced Analysis Capabilities
+- Support for additional complexity patterns (O(log n), O(n log n), O(n³))
+- Dynamic programming pattern recognition
+- Space complexity analysis
+- Average vs worst-case complexity differentiation
+- Detection of amortized time complexity
+
+### Code Optimization
+- Smart refactoring suggestions with code examples
+- Algorithmic optimization recommendations
+- Data structure usage optimization
+- Memory usage analysis and suggestions
+
+### Enable Educational Features
+- Interactive tutorials on algorithmic complexity
+- Visual step-by-step code execution
+- Comparative analysis of different implementations
+- Algorithm complexity learning resources
+
