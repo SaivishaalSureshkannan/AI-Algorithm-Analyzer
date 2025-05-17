@@ -1,0 +1,4 @@
+{
+    "code": "def exponential_time_27(jobs):\n    # Job scheduling with deadlines to maximize profit\n    # jobs is a list of (deadline, profit) tuples\n    n = len(jobs)\n    def max_profit(index, time_slots):\n        if index == n:\n            return 0\n        # Sort jobs by profit (highest first)\n        deadline, profit = jobs[index]\n        # Try to schedule this job at its deadline or earlier\n        max_value = max_profit(index + 1, time_slots)  # Don't schedule this job\n        for slot in range(min(deadline, n), 0, -1):\n            if slot not in time_slots:\n                time_slots.add(slot)\n                max_value = max(max_value, profit + max_profit(index + 1, time_slots))\n                time_slots.remove(slot)\n                break\n        return max_value\n    # Sort jobs by profit in descending order\n    jobs.sort(key=lambda x: x[1], reverse=True)\n    return max_profit(0, set())",
+    "complexity": "O(2^n)"
+}

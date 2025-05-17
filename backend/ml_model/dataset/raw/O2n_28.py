@@ -1,0 +1,4 @@
+{
+    "code": "def exponential_time_28(nums):\n    # Find minimum number of operations to make array non-decreasing\n    # Each operation can combine two adjacent elements\n    def min_ops(start, end):\n        if start >= end:\n            return 0\n        if (start, end) in memo:\n            return memo[(start, end)]\n        # Try all possible merge points\n        result = float('inf')\n        for k in range(start, end):\n            left_ops = min_ops(start, k)\n            right_ops = min_ops(k + 1, end)\n            merged_value = max(nums[start:k+1]) + max(nums[k+1:end+1])\n            total_ops = left_ops + right_ops + 1\n            result = min(result, total_ops)\n        memo[(start, end)] = result\n        return result\n    memo = {}\n    return min_ops(0, len(nums) - 1)",
+    "complexity": "O(2^n)"
+}

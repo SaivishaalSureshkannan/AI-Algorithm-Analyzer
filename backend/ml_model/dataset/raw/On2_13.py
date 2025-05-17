@@ -1,4 +1,4 @@
 {
-    "code": "def quadratic_time_13(strings):\n    groups = {}\n    for s in strings:\n        sorted_s = ''.join(sorted(s))\n        if sorted_s in groups:\n            groups[sorted_s].append(s)\n        else:\n            groups[sorted_s] = [s]\n    return list(groups.values())",
+    "code": "def quadratic_time_13(strings):\n    n = len(strings)\n    result = []\n    for i in range(n):\n        for j in range(n):\n            if i != j and strings[i] == strings[j]:\n                result.append((strings[i], strings[j]))\n    return result",
     "complexity": "O(n^2)"
 }

@@ -1,4 +1,4 @@
 {
-    "code": "def quadratic_time_14(intervals):\n    if not intervals:\n        return []\n    \n    merged = []\n    intervals.sort(key=lambda x: x[0])\n    \n    for interval in intervals:\n        if not merged or merged[-1][1] < interval[0]:\n            merged.append(interval)\n        else:\n            merged[-1][1] = max(merged[-1][1], interval[1])\n    \n    return merged",
+    "code": "def quadratic_time_14(intervals):\n    if not intervals:\n        return []\n    \n    # Implement bubble sort (O(n²)) instead of using the built-in sort\n    n = len(intervals)\n    for i in range(n):\n        for j in range(0, n - i - 1):\n            if intervals[j][0] > intervals[j + 1][0]:\n                intervals[j], intervals[j + 1] = intervals[j + 1], intervals[j]\n    \n    merged = []\n    for interval in intervals:\n        if not merged or merged[-1][1] < interval[0]:\n            merged.append(interval)\n        else:\n            merged[-1][1] = max(merged[-1][1], interval[1])\n    \n    return merged",
     "complexity": "O(n^2)"
 }

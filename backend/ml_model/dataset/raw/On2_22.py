@@ -1,0 +1,4 @@
+{
+    "code": "def quadratic_time_22(grid):\n    # Flood fill algorithm (recursive implementation)\n    if not grid or not grid[0]:\n        return grid\n    rows, cols = len(grid), len(grid[0])\n    visited = [[False for _ in range(cols)] for _ in range(rows)]\n    def fill(r, c, old_color, new_color):\n        if (r < 0 or c < 0 or r >= rows or c >= cols or visited[r][c] or grid[r][c] != old_color):\n            return\n        visited[r][c] = True\n        grid[r][c] = new_color\n        # Check all 4 directions\n        for dr, dc in [(0, 1), (1, 0), (0, -1), (-1, 0)]:\n            fill(r + dr, c + dc, old_color, new_color)\n    # Start fill from a specific position, e.g., (0, 0)\n    old_color = grid[0][0]\n    fill(0, 0, old_color, 3)\n    return grid",
+    "complexity": "O(n^2)"
+}

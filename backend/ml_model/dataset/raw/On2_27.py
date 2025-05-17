@@ -1,0 +1,4 @@
+{
+    "code": "def quadratic_time_27(equations, values, queries):\n    # Evaluate division queries using Floyd-Warshall\n    # Build graph from equations a/b = value\n    graph = {}\n    for (a, b), value in zip(equations, values):\n        if a not in graph:\n            graph[a] = {}\n        if b not in graph:\n            graph[b] = {}\n        graph[a][b] = value\n        graph[b][a] = 1.0 / value\n    # Floyd-Warshall algorithm to find all-pairs shortest paths\n    for k in graph:\n        for i in graph:\n            for j in graph:\n                if k in graph[i] and j in graph[k]:\n                    graph[i][j] = graph[i][k] * graph[k][j]\n    # Evaluate queries\n    results = []\n    for x, y in queries:\n        if x in graph and y in graph and y in graph[x]:\n            results.append(graph[x][y])\n        else:\n            results.append(-1.0)\n    return results",
+    "complexity": "O(n^2)"
+}

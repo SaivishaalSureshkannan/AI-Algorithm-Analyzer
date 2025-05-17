@@ -1,0 +1,4 @@
+{
+    "code": "def quadratic_time_30(expression):\n    # Count different ways to add parentheses to get different results\n    def compute(a, op, b):\n        if op == '+':\n            return a + b\n        elif op == '-':\n            return a - b\n        else:  # op == '*'\n            return a * b\n    def parse(start, end):\n        if (start, end) in memo:\n            return memo[(start, end)]\n        if start == end:\n            return [int(expression[start])]\n        results = []\n        for i in range(start + 1, end, 2):\n            left_results = parse(start, i - 1)\n            right_results = parse(i + 1, end)\n            op = expression[i]\n            for left in left_results:\n                for right in right_results:\n                    results.append(compute(left, op, right))\n        memo[(start, end)] = results\n        return results\n    memo = {}\n    return parse(0, len(expression) - 1)",
+    "complexity": "O(n^2)"
+}

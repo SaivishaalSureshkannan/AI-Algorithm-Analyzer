@@ -1,0 +1,4 @@
+{
+    "code": "def exponential_time_21(graph, start, end):\n    # Find all simple paths between start and end in a graph\n    def dfs(current, path, visited, all_paths):\n        if current == end:\n            all_paths.append(path[:])\n            return\n        visited.add(current)\n        for neighbor in graph.get(current, []):\n            if neighbor not in visited:\n                path.append(neighbor)\n                dfs(neighbor, path, visited.copy(), all_paths)\n                path.pop()\n        visited.remove(current)\n    all_paths = []\n    dfs(start, [start], set(), all_paths)\n    return all_paths",
+    "complexity": "O(2^n)"
+}

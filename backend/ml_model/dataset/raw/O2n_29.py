@@ -1,0 +1,4 @@
+{
+    "code": "def exponential_time_29(coins, amount):\n    # Coin change problem - find the minimum number of coins\n    def min_coins(remaining, coin_index):\n        if remaining == 0:\n            return 0\n        if remaining < 0 or coin_index >= len(coins):\n            return float('inf')\n        # Try including the current coin\n        include = 1 + min_coins(remaining - coins[coin_index], coin_index)\n        # Try excluding the current coin\n        exclude = min_coins(remaining, coin_index + 1)\n        return min(include, exclude)\n    result = min_coins(amount, 0)\n    return result if result != float('inf') else -1",
+    "complexity": "O(2^n)"
+}

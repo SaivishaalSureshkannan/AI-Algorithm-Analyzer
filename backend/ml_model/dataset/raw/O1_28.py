@@ -1,0 +1,4 @@
+{
+    "code": "def constant_time_28(rate_limiter, user_id):\n    # Simple token bucket algorithm simulation\n    now = time.time()\n    time_passed = now - rate_limiter['last_refill']\n    rate_limiter['last_refill'] = now\n    # Add tokens based on time passed (capped at max_tokens)\n    rate_limiter['tokens'] = min(\n        rate_limiter['max_tokens'],\n        rate_limiter['tokens'] + time_passed * rate_limiter['refill_rate']\n    )\n    # Check if request can be processed\n    if rate_limiter['tokens'] >= 1:\n        rate_limiter['tokens'] -= 1\n        return True\n    return False",
+    "complexity": "O(1)"
+}

@@ -1,0 +1,4 @@
+{
+    "code": "def exponential_time_23(nums, target):\n    # Partition array into two subsets with equal sum\n    total_sum = sum(nums)\n    if total_sum % 2 != 0:\n        return False  # Can't divide odd sum into equal parts\n    target_sum = total_sum // 2\n    def can_partition(index, current_sum):\n        # Base cases\n        if current_sum == target_sum:\n            return True\n        if index >= len(nums) or current_sum > target_sum:\n            return False\n        # Try including the current element\n        if can_partition(index + 1, current_sum + nums[index]):\n            return True\n        # Try excluding the current element\n        return can_partition(index + 1, current_sum)\n    return can_partition(0, 0)",
+    "complexity": "O(2^n)"
+}

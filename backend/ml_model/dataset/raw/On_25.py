@@ -1,0 +1,4 @@
+{
+    "code": "def linear_time_25(version1, version2):\n    # Compare version numbers\n    v1_parts = list(map(int, version1.split('.')))\n    v2_parts = list(map(int, version2.split('.')))\n    # Make both lists same length by padding with zeros\n    max_len = max(len(v1_parts), len(v2_parts))\n    v1_parts.extend([0] * (max_len - len(v1_parts)))\n    v2_parts.extend([0] * (max_len - len(v2_parts)))\n    for i in range(max_len):\n        if v1_parts[i] > v2_parts[i]:\n            return 1\n        elif v1_parts[i] < v2_parts[i]:\n            return -1\n    return 0",
+    "complexity": "O(n)"
+}

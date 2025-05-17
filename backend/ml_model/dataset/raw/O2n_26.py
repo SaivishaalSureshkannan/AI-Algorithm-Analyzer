@@ -1,0 +1,4 @@
+{
+    "code": "def exponential_time_26(s):\n    # Word Break - determine if a string can be segmented into dictionary words\n    def can_break(s, start, dictionary, memo):\n        if start >= len(s):\n            return True\n        if start in memo:\n            return memo[start]\n        for end in range(start + 1, len(s) + 1):\n            prefix = s[start:end]\n            if prefix in dictionary and can_break(s, end, dictionary, memo):\n                memo[start] = True\n                return True\n        memo[start] = False\n        return False\n    dictionary = {'apple', 'pen', 'applepen', 'pine', 'pineapple'}\n    memo = {}\n    return can_break(s, 0, dictionary, memo)",
+    "complexity": "O(2^n)"
+}

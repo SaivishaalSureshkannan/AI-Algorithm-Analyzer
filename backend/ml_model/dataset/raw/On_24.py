@@ -1,0 +1,4 @@
+{
+    "code": "def linear_time_24(text, k):\n    # Count words\n    words = text.lower().split()\n    word_count = {}\n    for word in words:\n        word = word.strip('.,!?;:()\"\\'').lower()\n        if word:\n            word_count[word] = word_count.get(word, 0) + 1\n    \n    # Find k most frequent in linear time using bucket sort approach\n    max_freq = max(word_count.values()) if word_count else 0\n    buckets = [[] for _ in range(max_freq + 1)]\n    \n    # Place words in frequency buckets O(n)\n    for word, count in word_count.items():\n        buckets[count].append(word)\n    \n    # Get top k words O(n)\n    result = []\n    for i in range(max_freq, 0, -1):\n        for word in buckets[i]:\n            result.append((word, i))\n            if len(result) == k:\n                return result\n    \n    return result",
+    "complexity": "O(n)"
+}
