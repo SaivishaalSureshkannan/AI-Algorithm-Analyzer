@@ -3,6 +3,22 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import ast
 from typing import Dict, List, Optional
+import joblib
+import os
+import sys
+from pathlib import Path
+
+# Add the ml_model directory to Python path
+backend_dir = Path(__file__).parent.parent
+ml_model_dir = backend_dir / "ml_model"
+sys.path.append(str(ml_model_dir))
+
+from src.feature_extractor import FeatureExtractor
+
+# Load the ML model
+model_path = backend_dir / "ml_model" / "models" / "complexity_predictor.joblib"
+model = joblib.load(model_path)
+feature_extractor = FeatureExtractor()
 
 app = FastAPI(title="AI Algorithm Complexity Analyzer")
 
@@ -23,6 +39,14 @@ class CodeAnalysisResponse(BaseModel):
     loops: Dict[str, int]
     recursion: bool
     suggestions: List[str]
+
+class MLPredictionRequest(BaseModel):
+    code: str
+
+class MLPredictionResponse(BaseModel):
+    predicted_complexity: str
+    confidence: float
+    features: Dict[str, int]
 
 def analyze_code(code: str) -> CodeAnalysisResponse:
     try:
@@ -82,6 +106,36 @@ async def analyze_algorithm(request: CodeAnalysisRequest):
     Analyze Python code and return its complexity analysis
     """
     return analyze_code(request.code)
+
+@app.post("/predict", response_model=MLPredictionResponse)
+async def predict_complexity(request: MLPredictionRequest):
+    """
+    Predict the time complexity of Python code using ML model
+    """
+    try:
+        # Extract features from the code
+        features = feature_extractor.extract_features(request.code)
+        
+        # Convert features to numpy array for prediction
+        feature_vector = feature_extractor.get_feature_vector(request.code)
+        
+        # Make prediction
+        prediction = model.predict([feature_vector])[0]
+        
+        # Get prediction probabilities
+        probabilities = model.predict_proba([feature_vector])[0]
+        confidence = float(max(probabilities))
+        
+        return MLPredictionResponse(
+            predicted_complexity=prediction,
+            confidence=confidence,
+            features=features
+        )
+    
+    except SyntaxError as e:
+        raise HTTPException(status_code=400, detail=f"Invalid Python code: {str(e)}")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error predicting complexity: {str(e)}")
 
 @app.get("/")
 async def root():
